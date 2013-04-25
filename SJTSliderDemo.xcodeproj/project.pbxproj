@@ -13,6 +13,7 @@
 		D3031794171E7FD800464001 /* Credits.rtf in Resources */ = {isa = PBXBuildFile; fileRef = D3031792171E7FD800464001 /* Credits.rtf */; };
 		D3031797171E7FD800464001 /* SJTAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = D3031796171E7FD800464001 /* SJTAppDelegate.m */; };
 		D303179A171E7FD800464001 /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = D3031798171E7FD800464001 /* MainMenu.xib */; };
+		D30317A2171E834700464001 /* SJTSlider.m in Sources */ = {isa = PBXBuildFile; fileRef = D30317A1171E834700464001 /* SJTSlider.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -29,6 +30,8 @@
 		D3031795171E7FD800464001 /* SJTAppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SJTAppDelegate.h; sourceTree = "<group>"; };
 		D3031796171E7FD800464001 /* SJTAppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SJTAppDelegate.m; sourceTree = "<group>"; };
 		D3031799171E7FD800464001 /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = en.lproj/MainMenu.xib; sourceTree = "<group>"; };
+		D30317A0171E834700464001 /* SJTSlider.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SJTSlider.h; sourceTree = "<group>"; };
+		D30317A1171E834700464001 /* SJTSlider.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SJTSlider.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -86,6 +89,8 @@
 				D3031796171E7FD800464001 /* SJTAppDelegate.m */,
 				D3031798171E7FD800464001 /* MainMenu.xib */,
 				D303178A171E7FD800464001 /* Supporting Files */,
+				D30317A0171E834700464001 /* SJTSlider.h */,
+				D30317A1171E834700464001 /* SJTSlider.m */,
 			);
 			path = SJTSliderDemo;
 			sourceTree = "<group>";
@@ -138,6 +143,8 @@
 			hasScannedForEncodings = 0;
 			knownRegions = (
 				en,
+				ja,
+				"zh-Hans",
 			);
 			mainGroup = D3031777171E7FD800464001;
 			productRefGroup = D3031781171E7FD800464001 /* Products */;
@@ -169,6 +176,7 @@
 			files = (
 				D3031790171E7FD800464001 /* main.m in Sources */,
 				D3031797171E7FD800464001 /* SJTAppDelegate.m in Sources */,
+				D30317A2171E834700464001 /* SJTSlider.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -229,7 +237,7 @@
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNINITIALIZED_AUTOS = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				MACOSX_DEPLOYMENT_TARGET = 10.8;
+				MACOSX_DEPLOYMENT_TARGET = 10.7;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = macosx;
 			};
@@ -256,7 +264,7 @@
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNINITIALIZED_AUTOS = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				MACOSX_DEPLOYMENT_TARGET = 10.8;
+				MACOSX_DEPLOYMENT_TARGET = 10.7;
 				SDKROOT = macosx;
 			};
 			name = Release;
@@ -268,6 +276,7 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "SJTSliderDemo/SJTSliderDemo-Prefix.pch";
 				INFOPLIST_FILE = "SJTSliderDemo/SJTSliderDemo-Info.plist";
+				MACOSX_DEPLOYMENT_TARGET = 10.7;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				WRAPPER_EXTENSION = app;
 			};
@@ -280,6 +289,7 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "SJTSliderDemo/SJTSliderDemo-Prefix.pch";
 				INFOPLIST_FILE = "SJTSliderDemo/SJTSliderDemo-Info.plist";
+				MACOSX_DEPLOYMENT_TARGET = 10.7;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				WRAPPER_EXTENSION = app;
 			};
@@ -304,6 +314,7 @@
 				D303179F171E7FD900464001 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
