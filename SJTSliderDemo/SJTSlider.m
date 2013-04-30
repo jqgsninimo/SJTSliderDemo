@@ -15,6 +15,10 @@ static const CGFloat SJTSliderTipPopoverMinWidthX = 60;
 static const CGFloat SJTSliderTipPopoverMinWidthY = 40;
 static const CGFloat SJTSliderTipPopoverMinHeightX = 38;
 static const CGFloat SJTSliderTipPopoverMinHeightY = 24;
+static const CGFloat SJTSliderMinHeight = 21;
+static const CGFloat SJTSliderMinHeightWithTickMark = 26;
+static const CGFloat SJTSliderMinWidth = 100;
+static const CGFloat SJTSliderTickMarkMinWidth = 5;
 
 #pragma mark -
 #pragma mark Class SJTSlider
@@ -24,6 +28,7 @@ static const CGFloat SJTSliderTipPopoverMinHeightY = 24;
 - (void)initView;
 - (void)showTipPopover:(BOOL)animated;
 - (void)closeTipPopover:(BOOL)animated;
+- (NSString *)tipForValue:(double)value;
 @end
 
 @implementation SJTSlider
@@ -94,6 +99,28 @@ static const CGFloat SJTSliderTipPopoverMinHeightY = 24;
     return self;
 }
 
+- (void)sizeToFit {
+    CGFloat minWidth = MAX(SJTSliderMinWidth, self.numberOfTickMarks*SJTSliderTickMarkMinWidth) ;
+    
+    NSRect frame = self.frame;
+    if (frame.size.width<frame.size.height) {
+        if (self.numberOfTickMarks) {
+            frame.size.width = SJTSliderMinHeightWithTickMark;
+        } else {
+            frame.size.width = SJTSliderMinHeight;
+        }
+        frame.size.height = minWidth;
+    } else {
+        frame.size.width = minWidth;
+        if (self.numberOfTickMarks) {
+            frame.size.height = SJTSliderMinHeightWithTickMark;
+        } else {
+            frame.size.height = SJTSliderMinHeight;
+        }
+    }
+    self.frame = frame;
+}
+
 - (BOOL)sendAction:(SEL)theAction to:(id)theTarget {
     if (self.tipEnabled) {
         [self showTipPopover:NO];
@@ -104,6 +131,19 @@ static const CGFloat SJTSliderTipPopoverMinHeightY = 24;
 
 #pragma mark -
 #pragma mark Utility Methods
+- (id)initWithOrientation:(BOOL)isVertical {
+    if (isVertical) {
+        self = [self initWithFrame:NSMakeRect(0, 0, SJTSliderMinHeight, SJTSliderMinWidth)];
+    } else {
+        self = [self initWithFrame:NSMakeRect(0, 0, SJTSliderMinWidth, SJTSliderMinHeight)];
+    }
+    if (self) {
+        [self initView];
+    }
+    
+    return self;
+}
+
 - (void)initView {
     self.continuous = YES;
     self.tipEnabled = YES;
@@ -116,7 +156,7 @@ static const CGFloat SJTSliderTipPopoverMinHeightY = 24;
                                                                   owner:self
                                                                userInfo:nil];
     [self addTrackingArea:trackingArea];
-
+    
     NSTextField *tipView = [[NSTextField alloc] init];
     tipView.bordered = NO;
     tipView.backgroundColor = [NSColor clearColor];
@@ -133,13 +173,8 @@ static const CGFloat SJTSliderTipPopoverMinHeightY = 24;
 }
 
 - (void)showTipPopover:(BOOL)animated {
-    NSString *tip = nil;
-    if (self.delegate&&[self.delegate respondsToSelector:@selector(slider:tipForValue:)]) {
-        tip = [self.delegate slider:self tipForValue:self.doubleValue];
-    } else {
-        tip = [NSString stringWithFormat:@"%0.2f", self.doubleValue];
-    }
-
+    NSString *tip = [self tipForValue:self.doubleValue];
+    
     if (tip) {
         NSView *contentView = self.tipPopover.contentViewController.view;
         NSTextField *tipView = (NSTextField *)contentView.subviews[0];
@@ -198,7 +233,7 @@ static const CGFloat SJTSliderTipPopoverMinHeightY = 24;
         [contentView setFrameSize:contentViewSize];
         tipView.frame = tipViewFrame;
         self.tipPopover.contentSize = contentViewSize;
-
+        
         self.tipPopover.animates = animated;
         [self.tipPopover showRelativeToRect:knobRect ofView:self preferredEdge:preferredEdge];
     }
@@ -209,6 +244,16 @@ static const CGFloat SJTSliderTipPopoverMinHeightY = 24;
         self.tipPopover.animates = animated;
         [self.tipPopover close];
     }
+}
+
+- (NSString *)tipForValue:(double)value {
+    NSString *tip;
+    if (self.delegate&&[self.delegate respondsToSelector:@selector(slider:tipForValue:)]) {
+        tip = [self.delegate slider:self tipForValue:self.doubleValue];
+    } else {
+        tip = [NSString stringWithFormat:@"%0.2f", self.doubleValue];
+    }
+    return tip;
 }
 
 @end

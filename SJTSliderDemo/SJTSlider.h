@@ -20,4 +20,5 @@
 @property (assign) NSTextAlignment tipAlignment;
 @property (assign) NSPopoverAppearance tipPopoverAppearance;
 @property (weak) id<SJTSliderDelegate> delegate;
+- (id)initWithOrientation:(BOOL)isVertical;
 @end
