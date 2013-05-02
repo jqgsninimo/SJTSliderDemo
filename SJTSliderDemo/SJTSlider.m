@@ -19,6 +19,7 @@ static const CGFloat SJTSliderMinHeight = 21;
 static const CGFloat SJTSliderMinHeightWithTickMark = 26;
 static const CGFloat SJTSliderMinWidth = 100;
 static const CGFloat SJTSliderTickMarkMinWidth = 5;
+static NSString *const SJTSliderPositioningRectkey = @"positioningRect";
 
 #pragma mark -
 #pragma mark Class SJTSlider
@@ -47,7 +48,7 @@ static const CGFloat SJTSliderTickMarkMinWidth = 5;
 #pragma mark -
 #pragma mark Methods From NSKeyValueObserving
 - (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context {
-    if (object==self.tipPopover&&[@"positioningRect" isEqualToString:keyPath]) {
+    if (object==self.tipPopover&&[SJTSliderPositioningRectkey isEqualToString:keyPath]) {
         NSView *tipContentView = self.tipPopover.contentViewController.view;
         NSTextField *tipView = (NSTextField *)tipContentView.subviews[0];
         NSTextAlignment tipAlignment = NSCenterTextAlignment;
@@ -126,11 +127,28 @@ static const CGFloat SJTSliderTickMarkMinWidth = 5;
         [self showTipPopover:NO];
     }
     
+    if (self.delegate&&[self.delegate respondsToSelector:@selector(valueDidSelectInSlider:)]) {
+        NSEvent *event = [[NSApplication sharedApplication] currentEvent];
+        if (event.type==NSLeftMouseUp) {
+            [self.delegate valueDidSelectInSlider:self];
+        }
+    }
+    
     return [super sendAction:theAction to:theTarget];
 }
 
 #pragma mark -
-#pragma mark Utility Methods
+#pragma mark Methods From NSPopoverDelegate
+- (void)popoverWillShow:(NSNotification *)notification {
+    [self.tipPopover addObserver:self forKeyPath:SJTSliderPositioningRectkey options:NSKeyValueObservingOptionNew context:NULL];
+}
+
+- (void)popoverWillClose:(NSNotification *)notification {
+    [self.tipPopover removeObserver:self forKeyPath:SJTSliderPositioningRectkey];
+}
+
+#pragma mark -
+#pragma mark Own Methods
 - (id)initWithOrientation:(BOOL)isVertical {
     if (isVertical) {
         self = [self initWithFrame:NSMakeRect(0, 0, SJTSliderMinHeight, SJTSliderMinWidth)];
@@ -169,7 +187,7 @@ static const CGFloat SJTSliderTickMarkMinWidth = 5;
     self.tipPopover = [[NSPopover alloc] init];
     self.tipPopover.contentViewController = [[NSViewController alloc] init];
     self.tipPopover.contentViewController.view = contentView;
-    [self.tipPopover addObserver:self forKeyPath:@"positioningRect" options:NSKeyValueObservingOptionNew context:NULL];
+    self.tipPopover.delegate = self;
 }
 
 - (void)showTipPopover:(BOOL)animated {

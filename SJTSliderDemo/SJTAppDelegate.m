@@ -86,6 +86,19 @@
     return result;
 }
 
+- (void)valueDidSelectInSlider:(SJTSlider *)slider {
+    if ([self.mansions28SliderArray containsObject:slider]) {
+        [[NSAlert alertWithMessageText:self.titleArray[self.leftSlider.integerValue%3]
+                         defaultButton:@"OK"
+                       alternateButton:nil
+                           otherButton:nil
+             informativeTextWithFormat:@"%@", [self slider:self.centerSlider tipForValue:self.centerSlider.doubleValue]]
+         beginSheetModalForWindow:self.window modalDelegate:nil didEndSelector:NULL contextInfo:nil];
+    }
+}
+
+#pragma mark -
+#pragma mark Own Methods
 - (IBAction)actionFromSlider:(SJTSlider *)sender {
     if (sender==self.aboveSlider) {
         switch (sender.integerValue) {

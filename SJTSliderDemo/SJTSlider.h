@@ -12,13 +12,14 @@
 
 @protocol SJTSliderDelegate <NSObject>
 - (NSString *)slider:(SJTSlider *)slider tipForValue:(double)value;
+- (void)valueDidSelectInSlider:(SJTSlider *)slider;
 @end
 
-@interface SJTSlider : NSSlider
+@interface SJTSlider : NSSlider <NSPopoverDelegate>
 @property (assign) BOOL tipEnabled;
 @property (assign) BOOL tipAutoAlignment;
 @property (assign) NSTextAlignment tipAlignment;
 @property (assign) NSPopoverAppearance tipPopoverAppearance;
-@property (weak) id<SJTSliderDelegate> delegate;
+@property (unsafe_unretained) id<SJTSliderDelegate> delegate;
 - (id)initWithOrientation:(BOOL)isVertical;
 @end
