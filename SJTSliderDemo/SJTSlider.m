@@ -27,6 +27,7 @@ static NSString *const SJTSliderPositioningRectkey = @"positioningRect";
 @interface SJTSlider ()
 @property (strong) NSPopover *tipPopover;
 - (void)initView;
+- (void)adjustTipAlignment;
 - (void)showTipPopover:(BOOL)animated;
 - (void)closeTipPopover:(BOOL)animated;
 - (NSString *)tipForValue:(double)value;
@@ -49,25 +50,7 @@ static NSString *const SJTSliderPositioningRectkey = @"positioningRect";
 #pragma mark Methods From NSKeyValueObserving
 - (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context {
     if (object==self.tipPopover&&[SJTSliderPositioningRectkey isEqualToString:keyPath]) {
-        NSView *tipContentView = self.tipPopover.contentViewController.view;
-        NSTextField *tipView = (NSTextField *)tipContentView.subviews[0];
-        NSTextAlignment tipAlignment = NSCenterTextAlignment;
-        if (self.tipAutoAlignment) {
-            NSRect tipContentFrame = [tipContentView convertRect:tipContentView.bounds toView:nil];
-            tipContentFrame = [tipContentView.window convertRectToScreen:tipContentFrame];
-            tipContentFrame = [self.window convertRectFromScreen:tipContentFrame];
-            tipContentFrame = [self convertRect:tipContentFrame fromView:nil];
-            NSRect tipTargetFrame = self.tipPopover.positioningRect;
-            
-            if (NSMaxX(tipContentFrame)<NSMinX(tipTargetFrame)) {
-                tipAlignment = NSRightTextAlignment;
-            } else if (NSMinX(tipContentFrame)>NSMaxX(tipTargetFrame)) {
-                tipAlignment = NSLeftTextAlignment;
-            }
-        } else {
-            tipAlignment = self.tipAlignment;
-        }
-        tipView.alignment = tipAlignment;
+        [self adjustTipAlignment];
     }
 }
 
@@ -141,6 +124,7 @@ static NSString *const SJTSliderPositioningRectkey = @"positioningRect";
 #pragma mark Methods From NSPopoverDelegate
 - (void)popoverWillShow:(NSNotification *)notification {
     [self.tipPopover addObserver:self forKeyPath:SJTSliderPositioningRectkey options:NSKeyValueObservingOptionNew context:NULL];
+    [self adjustTipAlignment];
 }
 
 - (void)popoverWillClose:(NSNotification *)notification {
@@ -188,6 +172,28 @@ static NSString *const SJTSliderPositioningRectkey = @"positioningRect";
     self.tipPopover.contentViewController = [[NSViewController alloc] init];
     self.tipPopover.contentViewController.view = contentView;
     self.tipPopover.delegate = self;
+}
+
+- (void)adjustTipAlignment {
+    NSView *tipContentView = self.tipPopover.contentViewController.view;
+    NSTextField *tipView = (NSTextField *)tipContentView.subviews[0];
+    NSTextAlignment tipAlignment = NSCenterTextAlignment;
+    if (self.tipAutoAlignment) {
+        NSRect tipContentFrame = [tipContentView convertRect:tipContentView.bounds toView:nil];
+        tipContentFrame = [tipContentView.window convertRectToScreen:tipContentFrame];
+        tipContentFrame = [self.window convertRectFromScreen:tipContentFrame];
+        tipContentFrame = [self convertRect:tipContentFrame fromView:nil];
+        NSRect tipTargetFrame = self.tipPopover.positioningRect;
+        
+        if (NSMaxX(tipContentFrame)<NSMinX(tipTargetFrame)) {
+            tipAlignment = NSRightTextAlignment;
+        } else if (NSMinX(tipContentFrame)>NSMaxX(tipTargetFrame)) {
+            tipAlignment = NSLeftTextAlignment;
+        }
+    } else {
+        tipAlignment = self.tipAlignment;
+    }
+    tipView.alignment = tipAlignment;
 }
 
 - (void)showTipPopover:(BOOL)animated {
