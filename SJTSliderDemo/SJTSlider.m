@@ -112,7 +112,7 @@ static NSString *const SJTSliderPositioningRectkey = @"positioningRect";
     
     if (self.delegate&&[self.delegate respondsToSelector:@selector(valueDidSelectInSlider:)]) {
         NSEvent *event = [[NSApplication sharedApplication] currentEvent];
-        if (event.type==NSLeftMouseUp) {
+        if (event.type == NSEventTypeLeftMouseUp) {
             [self.delegate valueDidSelectInSlider:self];
         }
     }
@@ -150,8 +150,8 @@ static NSString *const SJTSliderPositioningRectkey = @"positioningRect";
     self.continuous = YES;
     self.tipEnabled = YES;
     self.tipAutoAlignment = YES;
-    self.tipAlignment = NSCenterTextAlignment;
-    self.tipPopoverAppearance = NSPopoverAppearanceMinimal;
+    self.tipAlignment = NSTextAlignmentCenter;
+    self.tipAppearance = [NSAppearance appearanceNamed:NSAppearanceNameVibrantLight];
     
     NSTrackingArea *trackingArea = [[NSTrackingArea alloc] initWithRect:NSZeroRect
                                                                 options:NSTrackingInVisibleRect | NSTrackingMouseEnteredAndExited | NSTrackingMouseMoved | NSTrackingActiveInActiveApp
@@ -177,7 +177,7 @@ static NSString *const SJTSliderPositioningRectkey = @"positioningRect";
 - (void)adjustTipAlignment {
     NSView *tipContentView = self.tipPopover.contentViewController.view;
     NSTextField *tipView = (NSTextField *)tipContentView.subviews[0];
-    NSTextAlignment tipAlignment = NSCenterTextAlignment;
+    NSTextAlignment tipAlignment = NSTextAlignmentCenter;
     if (self.tipAutoAlignment) {
         NSRect tipContentFrame = [tipContentView convertRect:tipContentView.bounds toView:nil];
         tipContentFrame = [tipContentView.window convertRectToScreen:tipContentFrame];
@@ -186,9 +186,9 @@ static NSString *const SJTSliderPositioningRectkey = @"positioningRect";
         NSRect tipTargetFrame = self.tipPopover.positioningRect;
         
         if (NSMaxX(tipContentFrame)<NSMinX(tipTargetFrame)) {
-            tipAlignment = NSRightTextAlignment;
+            tipAlignment = NSTextAlignmentRight;
         } else if (NSMinX(tipContentFrame)>NSMaxX(tipTargetFrame)) {
-            tipAlignment = NSLeftTextAlignment;
+            tipAlignment = NSTextAlignmentLeft;
         }
     } else {
         tipAlignment = self.tipAlignment;
@@ -205,7 +205,7 @@ static NSString *const SJTSliderPositioningRectkey = @"positioningRect";
         
         NSRect knobRect = [((NSSliderCell *)self.cell) knobRectFlipped:self.isFlipped];
         NSRectEdge preferredEdge;
-        if (((NSSliderCell *)self.cell).sliderType==NSCircularSlider) {
+        if (((NSSliderCell *)self.cell).sliderType == NSSliderTypeCircular) {
             NSPoint tickMartCenter = NSMakePoint(NSMidX(knobRect), NSMidY(knobRect));
             NSPoint viewCenter = NSMakePoint(NSMidX(self.bounds), NSMidY(self.bounds));
             CGFloat cutoffValue = sqrtf(((viewCenter.x-tickMartCenter.x)*(viewCenter.x-tickMartCenter.x)+(viewCenter.y-tickMartCenter.y)*(viewCenter.y-tickMartCenter.y))/2);
@@ -219,21 +219,20 @@ static NSString *const SJTSliderPositioningRectkey = @"positioningRect";
                 preferredEdge = NSMinYEdge;
             }
         } else if (self.isVertical) {
-            if (self.tickMarkPosition==NSTickMarkLeft) {
+            if (self.tickMarkPosition == NSTickMarkPositionLeading) {
                 preferredEdge = NSMinXEdge;
             } else {
                 preferredEdge = NSMaxXEdge;
             }
         } else {
-            if (self.tickMarkPosition==NSTickMarkBelow) {
+            if (self.tickMarkPosition == NSTickMarkPositionBelow) {
                 preferredEdge = self.isFlipped?NSMaxYEdge:NSMinYEdge;
             } else {
                 preferredEdge = self.isFlipped?NSMinYEdge:NSMaxYEdge;
             }
         }
         
-        self.tipPopover.appearance = self.tipPopoverAppearance;
-        tipView.textColor = self.tipPopoverAppearance==NSPopoverAppearanceMinimal?[NSColor textColor]:[NSColor textBackgroundColor];
+        self.tipPopover.appearance = self.tipAppearance;
         tipView.stringValue = tip;
         [tipView sizeToFit];
         NSRect tipViewFrame = tipView.bounds;

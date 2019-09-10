@@ -19,7 +19,7 @@
 @property (assign) BOOL tipEnabled;
 @property (assign) BOOL tipAutoAlignment;
 @property (assign) NSTextAlignment tipAlignment;
-@property (assign) NSPopoverAppearance tipPopoverAppearance;
+@property (strong) NSAppearance *tipAppearance;
 @property (unsafe_unretained) id<SJTSliderDelegate> delegate;
 - (id)initWithOrientation:(BOOL)isVertical;
 @end

@@ -64,7 +64,11 @@
     NSString *result;
     NSInteger integerValue = value;
     if (slider==self.aboveSlider) {
-        result = @[@"Minimal Tip", @"HUD Tip", @"Disable Tip"][integerValue];
+        result = @[NSAppearanceNameVibrantLight,
+                   NSAppearanceNameVibrantDark,
+                   NSAppearanceNameAqua,
+                   NSAppearanceNameDarkAqua,
+                   @"Disable Tip"][integerValue];
     } else if (slider==self.belowSlider) {
         result = @[@"Tick Mark Values Only", @"All Values"][integerValue];
     } else if (slider==self.leftSlider) {
@@ -88,12 +92,11 @@
 
 - (void)valueDidSelectInSlider:(SJTSlider *)slider {
     if ([self.mansions28SliderArray containsObject:slider]) {
-        [[NSAlert alertWithMessageText:self.titleArray[self.leftSlider.integerValue%3]
-                         defaultButton:@"OK"
-                       alternateButton:nil
-                           otherButton:nil
-             informativeTextWithFormat:@"%@", [self slider:self.centerSlider tipForValue:self.centerSlider.doubleValue]]
-         beginSheetModalForWindow:self.window modalDelegate:nil didEndSelector:NULL contextInfo:nil];
+        NSAlert *alert = [[NSAlert alloc] init];
+        [alert setMessageText:self.titleArray[self.leftSlider.integerValue%3]];
+        [alert addButtonWithTitle:@"OK"];
+        [alert setInformativeText:[NSString stringWithFormat:@"%@", [self slider:self.centerSlider tipForValue:self.centerSlider.doubleValue]]];
+        [alert beginSheetModalForWindow:self.window completionHandler:nil];
     }
 }
 
@@ -101,24 +104,15 @@
 #pragma mark Own Methods
 - (IBAction)actionFromSlider:(SJTSlider *)sender {
     if (sender==self.aboveSlider) {
-        switch (sender.integerValue) {
-            case 0:
-                for (SJTSlider *slider in self.mansions28SliderArray) {
-                    slider.tipEnabled = YES;
-                    slider.tipPopoverAppearance = NSPopoverAppearanceMinimal;
-                }
-                break;
-            case 1:
-                for (SJTSlider *slider in self.mansions28SliderArray) {
-                    slider.tipEnabled = YES;
-                    slider.tipPopoverAppearance = NSPopoverAppearanceHUD;
-                }
-                break;
-            default:
-                for (SJTSlider *slider in self.mansions28SliderArray) {
-                    slider.tipEnabled = NO;
-                }
-                break;
+        if (sender.integerValue == sender.numberOfTickMarks - 1) {
+            for (SJTSlider *slider in self.mansions28SliderArray) {
+                slider.tipEnabled = NO;
+            }
+        } else {
+            for (SJTSlider *slider in self.mansions28SliderArray) {
+                slider.tipEnabled = YES;
+                slider.tipAppearance = [NSAppearance appearanceNamed:[self slider:sender tipForValue:sender.integerValue]];
+            }
         }
     } else if (sender==self.belowSlider) {
         if (sender.integerValue==0) {
@@ -139,19 +133,19 @@
             case 1:
                 for (SJTSlider *slider in self.mansions28SliderArray) {
                     slider.tipAutoAlignment = NO;
-                    slider.tipAlignment = NSCenterTextAlignment;
+                    slider.tipAlignment = NSTextAlignmentCenter;
                 }
                 break;
             case 2:
                 for (SJTSlider *slider in self.mansions28SliderArray) {
                     slider.tipAutoAlignment = NO;
-                    slider.tipAlignment = NSLeftTextAlignment;
+                    slider.tipAlignment = NSTextAlignmentLeft;
                 }
                 break;
             case 3:
                 for (SJTSlider *slider in self.mansions28SliderArray) {
                     slider.tipAutoAlignment = NO;
-                    slider.tipAlignment = NSRightTextAlignment;
+                    slider.tipAlignment = NSTextAlignmentRight;
                 }
                 break;
             default:
